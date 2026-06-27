@@ -75,6 +75,16 @@ export default function QuizPage() {
 
   async function handleSubmit() {
     if (!current || !answer.trim()) return;
+
+    // iOS Safari: await 전에 user gesture 컨텍스트 안에서 TTS 잠금 해제
+    try {
+      const synth = window.speechSynthesis;
+      if (synth) {
+        synth.cancel();
+        synth.speak(new SpeechSynthesisUtterance(' '));
+      }
+    } catch {}
+
     const today = new Date().toISOString().split('T')[0];
     const res = await fetch('/api/quiz/check', {
       method: 'POST',
