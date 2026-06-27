@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import type { Level } from '@/types';
@@ -52,19 +52,17 @@ export default function QuizPage() {
   const [state, setState] = useState<State>('question');
   const [msg, setMsg] = useState('');
 
-  useEffect(() => {
-    if ((state === 'correct' || state === 'wrong') && msg) {
-      try {
-        const synth = window.speechSynthesis;
-        if (!synth) return;
-        synth.cancel();
-        const utt = new SpeechSynthesisUtterance(msg);
-        utt.lang = 'ko-KR';
-        utt.rate = 0.95;
-        synth.speak(utt);
-      } catch {}
-    }
-  }, [state, msg]);
+  function speak(text: string) {
+    try {
+      const synth = window.speechSynthesis;
+      if (!synth) return;
+      synth.cancel();
+      const utt = new SpeechSynthesisUtterance(text);
+      utt.lang = 'ko-KR';
+      utt.rate = 0.95;
+      synth.speak(utt);
+    } catch {}
+  }
 
   const byLevel = Object.fromEntries(sentences.map((s) => [s.level, s])) as Record<Level, (typeof sentences)[number] | undefined>;
   const current = byLevel[activeLevel];
@@ -85,11 +83,15 @@ export default function QuizPage() {
     });
     const data = await res.json();
     if (data.correct) {
+      const m = rand(CORRECT_MSGS);
+      setMsg(m);
       setState('correct');
-      setMsg(rand(CORRECT_MSGS));
+      speak(m);
     } else {
+      const m = rand(WRONG_MSGS);
+      setMsg(m);
       setState('wrong');
-      setMsg(rand(WRONG_MSGS));
+      speak(m);
     }
   }
 
