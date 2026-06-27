@@ -1,11 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import type { Level } from '@/types';
 import { LEVEL_LABEL } from '@/types';
 import { useTodaySentences } from '@/hooks/useTodaySentences';
+
+function isInAppBrowser() {
+  if (typeof window === 'undefined') return false;
+  return /KAKAO|kakaotalk|Line|Instagram|NAVER|FB_IAB|FBAN/i.test(navigator.userAgent);
+}
+
+function openInChrome() {
+  const url = window.location.href;
+  window.location.href = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+}
 
 const LEVELS: Level[] = ['beginner', 'intermediate', 'advanced'];
 
@@ -51,6 +63,11 @@ export default function QuizPage() {
   const [answer, setAnswer] = useState('');
   const [state, setState] = useState<State>('question');
   const [msg, setMsg] = useState('');
+  const [inApp, setInApp] = useState(false);
+
+  useEffect(() => {
+    setInApp(isInAppBrowser());
+  }, []);
 
   function speak(text: string) {
     try {
@@ -115,6 +132,17 @@ export default function QuizPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header back={{ href: '/', label: '오늘의 문장' }} />
+      {inApp && (
+        <div className="w-full px-4 py-3 bg-amber-50 border-b border-amber-200 flex items-center justify-between gap-3">
+          <p className="text-sm text-amber-800">카카오톡 브라우저는 음성을 지원하지 않아요.</p>
+          <button
+            onClick={openInChrome}
+            className="shrink-0 px-3 py-1.5 bg-amber-800 text-white text-xs font-semibold rounded-lg"
+          >
+            크롬으로 열기
+          </button>
+        </div>
+      )}
       <main className="flex flex-col items-center gap-8 px-4 py-16">
         <p className="text-sm text-[#AEA9A0]">{formatDate(new Date())}</p>
 
