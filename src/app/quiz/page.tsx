@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Header } from '@/components/layout/Header';
 import type { Level } from '@/types';
@@ -15,9 +15,11 @@ const CORRECT_MSGS = [
   '딩동댕. 오늘 공부 다 했어요.',
 ];
 const WRONG_MSGS = [
-  '이걸 틀렸다고요? 다시 보세요.',
-  '아직 멀었네요. 오늘 문장 다시 읽어요.',
-  '영어가 그렇게 쉬웠으면 다들 잘하겠죠.',
+  '이 단어 하나를 못 외워요? 진짜요?',
+  '틀렸어요. 그러니까 영어가 늘지를 않지.',
+  '매일 보는 문장인데 이걸 틀렸어요? 내일은 제발.',
+  '이 정도는 알아야 기본이에요. 다시 하세요.',
+  '오늘 뭐 했어요? 공부는 한 거 맞아요?',
 ];
 
 function rand<T>(arr: T[]): T {
@@ -49,6 +51,16 @@ export default function QuizPage() {
   const [answer, setAnswer] = useState('');
   const [state, setState] = useState<State>('question');
   const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    if ((state === 'correct' || state === 'wrong') && msg) {
+      window.speechSynthesis.cancel();
+      const utt = new SpeechSynthesisUtterance(msg);
+      utt.lang = 'ko-KR';
+      utt.rate = 0.95;
+      window.speechSynthesis.speak(utt);
+    }
+  }, [state, msg]);
 
   const byLevel = Object.fromEntries(sentences.map((s) => [s.level, s])) as Record<Level, (typeof sentences)[number] | undefined>;
   const current = byLevel[activeLevel];
