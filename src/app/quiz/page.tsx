@@ -60,6 +60,8 @@ export default function QuizPage() {
       const utt = new SpeechSynthesisUtterance(text);
       utt.lang = 'ko-KR';
       utt.rate = 0.95;
+      // Android Chrome: cancel() 후 paused 상태로 고착되는 버그 수정
+      synth.resume();
       synth.speak(utt);
     } catch {}
   }
