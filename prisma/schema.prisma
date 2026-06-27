@@ -6,3 +6,17 @@ datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
+
+model Sentence {
+  id                  String   @id @default(cuid())
+  date                String
+  level               String   // "beginner" | "intermediate" | "advanced"
+  english             String
+  koreanPronunciation String
+  koreanTranslation   String
+  blankWord           String
+  pitchData           String   @default("[]")
+  createdAt           DateTime @default(now())
+
+  @@unique([date, level])
+}
