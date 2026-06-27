@@ -54,11 +54,15 @@ export default function QuizPage() {
 
   useEffect(() => {
     if ((state === 'correct' || state === 'wrong') && msg) {
-      window.speechSynthesis.cancel();
-      const utt = new SpeechSynthesisUtterance(msg);
-      utt.lang = 'ko-KR';
-      utt.rate = 0.95;
-      window.speechSynthesis.speak(utt);
+      try {
+        const synth = window.speechSynthesis;
+        if (!synth) return;
+        synth.cancel();
+        const utt = new SpeechSynthesisUtterance(msg);
+        utt.lang = 'ko-KR';
+        utt.rate = 0.95;
+        synth.speak(utt);
+      } catch {}
     }
   }, [state, msg]);
 
