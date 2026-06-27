@@ -47,17 +47,29 @@ Claude AI가 영어 문장을 생성하고, 한국어 발음과 해석을 함께
 daily-english-bot/
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx            # 메인 페이지 (오늘의 문장)
-│   │   ├── history/page.tsx    # 지난 문장 목록
+│   │   ├── layout.tsx              # 루트 레이아웃
+│   │   ├── page.tsx                # 메인 페이지 (오늘의 문장)
+│   │   ├── globals.css             # 전역 스타일
+│   │   ├── history/
+│   │   │   └── page.tsx            # 지난 문장 목록
 │   │   └── api/
-│   │       └── generate/       # 문장 생성 API (Cron 호출)
+│   │       └── generate/           # 문장 생성 API (Cron 호출)
 │   ├── components/
-│   │   ├── TodaySentence.tsx   # 오늘 문장 카드
-│   │   └── HistoryList.tsx     # 지난 문장 목록
-│   └── lib/
-│       └── claude.ts           # Claude AI 연동
-├── prisma/                     # DB 스키마
-└── ...
+│   │   ├── ui/                     # shadcn/ui 컴포넌트
+│   │   ├── layout/                 # 헤더, 푸터 등 레이아웃
+│   │   └── common/                 # 공통 컴포넌트
+│   ├── lib/
+│   │   ├── utils.ts                # 유틸리티 (cn 함수 등)
+│   │   └── claude.ts               # Claude AI 연동 (생성 예정)
+│   ├── hooks/                      # 커스텀 훅
+│   └── types/                      # TypeScript 타입 정의
+├── prisma/
+│   └── schema.prisma               # DB 스키마 (SQLite → Neon Postgres)
+├── public/                         # 정적 파일
+├── components.json                 # shadcn/ui 설정
+├── next.config.ts
+├── tailwind.config.ts
+└── tsconfig.json
 ```
 
 ## 작업 원칙 (필수)
@@ -84,4 +96,4 @@ daily-english-bot/
 - 모바일 앱
 
 ## 다음 단계
-- `/2-directory-structure-setup` 으로 프로젝트 폴더 구조를 생성하세요
+- `/3-mcp-setup` 으로 MCP 서버를 설정하세요
